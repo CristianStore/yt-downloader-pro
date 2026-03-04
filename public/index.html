@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>YouTube Music Downloader Premium</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d1117">
+</head>
+
+<body>
+    <div class="background-nebula"></div>
+
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <i class="fa-brands fa-youtube" style="color: #ff0000;"></i>
+                <span>YT MUSIC <span class="badge">PRO</span></span>
+            </div>
+            <p class="subtitle">Descarga tu música favorita en alta calidad</p>
+        </header>
+
+        <main>
+            <div class="search-section card">
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-link"></i>
+                    <input type="text" id="youtube-url" placeholder="Pega el enlace de YouTube aquí...">
+                    <button id="btn-paste" title="Pegar desde portapapeles">
+                        <i class="fa-solid fa-paste"></i>
+                    </button>
+                </div>
+                <button id="btn-analyze" class="btn-primary">
+                    <span>ANALIZAR</span>
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </button>
+            </div>
+
+            <!-- Previsualización del Video -->
+            <div id="video-preview" class="card" style="display: none;">
+                <div class="video-info">
+                    <img id="video-thumb" src="" alt="Thumbnail">
+                    <div class="text-info">
+                        <h3 id="video-title">Título del video</h3>
+                        <p id="video-author">Autor</p>
+                    </div>
+                </div>
+                <div class="actions">
+                    <button id="btn-download-mp3" class="btn-success">
+                        <i class="fa-solid fa-music"></i>
+                        MP3 (AUDIO)
+                    </button>
+                    <button id="btn-download-mp4" class="btn-primary"
+                        style="margin-top: 10px; background: linear-gradient(135deg, #8957e5, #ab7df8);">
+                        <i class="fa-solid fa-video"></i>
+                        MP4 (VIDEO)
+                    </button>
+                    <button id="btn-share" class="btn-ghost"
+                        style="margin-top: 10px; border-color: var(--primary); color: var(--primary);">
+                        <i class="fa-solid fa-share-nodes"></i>
+                        COMPARTIR CON AMIGOS
+                    </button>
+                </div>
+            </div>
+
+            <!-- Historial de Descargas -->
+            <section id="history-section" style="display: none;">
+                <h2 class="section-title"><i class="fa-solid fa-clock-rotate-left"></i> Historial Reciente</h2>
+                <div id="history-list">
+                    <!-- Items de historial se insertarán aquí -->
+                </div>
+                <button id="btn-clear-history" class="btn-ghost">Limpiar Historial</button>
+            </section>
+
+            <!-- Estado de Carga -->
+            <div id="loader" class="loader-container" style="display: none;">
+                <div class="spinner"></div>
+                <p id="loader-text">Procesando...</p>
+            </div>
+
+            <div class="tip-section">
+                <i class="fa-solid fa-circle-info"></i>
+                <span>Instala esta app en tu celular desde el menú del navegador para usarla como una app real.</span>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 YouTube Music Downloader • Premium Experience</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

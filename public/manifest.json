@@ -1,0 +1,17 @@
+{
+    "name": "YT Music Downloader Pro",
+    "short_name": "YT Music",
+    "description": "Descarga música de YouTube en alta calidad",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#0d1117",
+    "theme_color": "#0d1117",
+    "icons": [
+        {
+            "src": "https://cdn-icons-png.flaticon.com/512/3844/3844724.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}
