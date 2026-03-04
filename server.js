@@ -7,18 +7,26 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 4050;
 
-// Detectar entorno (Windows local vs Servidor Linux)
+// Verificar que yt-dlp existe
 const isWindows = process.platform === 'win32';
 const YTDLP_PATH = isWindows ? path.join(__dirname, 'yt-dlp.exe') : 'yt-dlp';
+
+if (isWindows) {
+    if (!fs.existsSync(YTDLP_PATH)) {
+        console.error(`❌ ERROR: No se encontró yt-dlp.exe en: ${YTDLP_PATH}`);
+        console.log('Intentando buscar en el directorio actual...');
+        const altPath = path.join(process.cwd(), 'yt-dlp.exe');
+        if (fs.existsSync(altPath)) {
+            console.log(`✅ Encontrado en el directorio actual: ${altPath}`);
+        }
+    } else {
+        console.log(`✅ Motor yt-dlp.exe detectado en: ${YTDLP_PATH}`);
+    }
+}
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-
-// Verificar que yt-dlp.exe existe localmente
-if (isWindows && !fs.existsSync(YTDLP_PATH)) {
-    console.error('❌ ERROR: yt-dlp.exe no encontrado en el directorio del proyecto.');
-}
 
 // API: Obtener información del video
 app.get('/api/info', (req, res) => {
