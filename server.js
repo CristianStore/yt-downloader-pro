@@ -15,8 +15,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Verificar que yt-dlp.exe existe
-if (!fs.existsSync(YTDLP_PATH)) {
+// Verificar que yt-dlp.exe existe localmente
+if (isWindows && !fs.existsSync(YTDLP_PATH)) {
     console.error('❌ ERROR: yt-dlp.exe no encontrado en el directorio del proyecto.');
 }
 
@@ -27,7 +27,16 @@ app.get('/api/info', (req, res) => {
 
     if (!videoURL) return res.status(400).json({ error: 'URL no válida' });
 
-    execFile(YTDLP_PATH, ['--dump-json', '--no-playlist', videoURL], (error, stdout, stderr) => {
+    const args = [
+        '--dump-json',
+        '--no-playlist',
+        '--no-check-certificates',
+        '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        '--extractor-args', 'youtube:player-client=android,web',
+        videoURL
+    ];
+
+    execFile(YTDLP_PATH, args, (error, stdout, stderr) => {
         if (error) {
             console.error('[ERROR] Info failed:', stderr);
             return res.status(500).json({ error: 'No se pudo obtener la información. YouTube está bloqueando la conexión.' });
@@ -58,16 +67,24 @@ app.get('/api/download', (req, res) => {
 
     if (!videoURL) return res.status(400).send('URL no válida');
 
-    // Obtener título primero para el header
-    execFile(YTDLP_PATH, ['--get-title', '--no-playlist', videoURL], (error, stdout) => {
+    // Comandos de resiliencia comunes
+    const commonArgs = [
+        '--no-playlist',
+        '--no-check-certificates',
+        '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        '--extractor-args', 'youtube:player-client=android,web'
+    ];
+
+    // Obtener título primero
+    execFile(YTDLP_PATH, [...commonArgs, '--get-title', videoURL], (error, stdout) => {
         const title = (stdout || 'video').trim().replace(/[<>:"/\\|?*]/g, '').substring(0, 100);
         const extension = format === 'mp4' ? 'mp4' : 'mp3';
 
         res.header('Content-Disposition', `attachment; filename="${title}.${extension}"`);
 
         const args = [
-            '--no-playlist',
-            '-o', '-', // Output to stdout
+            ...commonArgs,
+            '-o', '-',
             videoURL
         ];
 
@@ -83,7 +100,6 @@ app.get('/api/download', (req, res) => {
         child.stdout.pipe(res);
 
         child.stderr.on('data', (data) => {
-            // No enviar a res porque ya se está enviando el buffer de video/audio
             console.log(`[YT-DLP LOG] ${data}`);
         });
 
@@ -100,5 +116,5 @@ app.get('/api/download', (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`🚀 Music Server running on http://localhost:${PORT}`);
-    console.log(`🛠️ Engine: yt-dlp.exe (Binary Mode)`);
+    console.log(`🛠️ Engine: yt-dlp (Resilient Mode)`);
 });
